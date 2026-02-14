@@ -75,3 +75,136 @@ Y si se puede, algo que me avise cuando me esté quedando sin tela o cuando un p
 No sé si eso es un sistema grande o algo sencillo, tú dime. Pero ya siento que si sigo así, el taller crece y el desorden crece conmigo.
 
 Bueno, Ingeniero… ¿por dónde empezamos?"
+
+# 🗄️ Modelo de Base de Datos – TallerTextilDB
+
+Como resultado del análisis de las Historias de Usuario, se diseñó un modelo relacional orientado a la digitalización del taller de confección, alineado al **ODS 9 (Industria, Innovación e Infraestructura)**.
+
+La estructura de la base de datos permite gestionar inventario, pedidos, consumo de materiales y control de pagos, proporcionando información clara para la toma de decisiones y crecimiento sostenible del taller.
+
+---
+
+## 📋 Tablas Creadas
+
+### 🧵 TipoTela
+Permite clasificar los distintos tipos de tela utilizados en el taller.
+
+**Campos principales:**
+- `IdTipoTela` (PK)
+- `Nombre`
+- `StockMinimo`
+
+El campo **StockMinimo** permite generar alertas cuando el inventario baja del nivel establecido.
+
+---
+
+### 🧶 Tela
+Registra cada tela específica disponible en inventario.
+
+**Campos principales:**
+- `IdTela` (PK)
+- `IdTipoTela` (FK)
+- `Nombre`
+- `MetrosDisponibles`
+- `CostoPorMetro`
+
+Se relaciona con **TipoTela** y permite llevar un control exacto del inventario disponible.
+
+---
+
+### 👤 Cliente
+Contiene la información básica de los clientes del taller.
+
+**Campos principales:**
+- `IdCliente` (PK)
+- `Nombre`
+- `Telefono`
+
+---
+
+### 📦 Pedido
+Registra cada orden realizada por un cliente.
+
+**Campos principales:**
+- `IdPedido` (PK)
+- `IdCliente` (FK)
+- `Fecha`
+- `Estado`
+- `Total`
+
+Permite visualizar el estado del pedido:
+- Pendiente  
+- En producción  
+- Terminado  
+- Entregado  
+
+---
+
+### 📊 MovimientoInventario
+Registra entradas y salidas de tela.
+
+**Campos principales:**
+- `IdMovimiento` (PK)
+- `IdTela` (FK)
+- `TipoMovimiento`
+- `CantidadMetros`
+- `Fecha`
+- `IdPedido` (FK opcional)
+
+Permite trazabilidad completa del inventario.
+
+---
+
+### ✂️ ConsumoTela
+Registra la cantidad exacta de tela consumida por cada pedido.
+
+**Campos principales:**
+- `IdConsumo` (PK)
+- `IdPedido` (FK)
+- `IdTela` (FK)
+- `MetrosConsumidos`
+- `CostoCalculado`
+
+Facilita el cálculo del costo real por orden.
+
+---
+
+### 💰 Pago
+Registra pagos parciales o totales realizados por los clientes.
+
+**Campos principales:**
+- `IdPago` (PK)
+- `IdPedido` (FK)
+- `Fecha`
+- `Monto`
+
+Permite calcular automáticamente el saldo pendiente por pedido.
+
+---
+
+## 🔄 Enfoque DevOps e Idempotencia
+
+El script SQL fue desarrollado bajo un enfoque de **integración continua**, aplicando el principio de **idempotencia**.
+
+Cada instrucción `CREATE` está precedida por una validación de existencia (`IF NOT EXISTS`), lo que permite ejecutar el script múltiples veces sin generar errores.
+
+### ✅ Beneficios
+
+- Seguridad en despliegues repetidos  
+- Compatibilidad con integración continua  
+- Buenas prácticas de arquitectura de persistencia  
+- Preparación para trabajo colaborativo  
+
+---
+
+## 🎯 Objetivo del Modelo
+
+El diseño de esta base de datos permite:
+
+- Controlar inventario en tiempo real  
+- Visualizar el estado de los pedidos  
+- Registrar consumo de materiales  
+- Gestionar pagos y saldos pendientes  
+- Analizar rentabilidad del taller  
+
+---
